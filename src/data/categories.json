@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "foundations",
+    "title": "Foundations",
+    "summary": "Message format, headers, MIME, identity, and the envelope.",
+    "order": 1
+  },
+  {
+    "slug": "authentication",
+    "title": "Authentication",
+    "summary": "SPF, DKIM, DMARC, transport security, and domain trust.",
+    "order": 2
+  },
+  {
+    "slug": "deliverability",
+    "title": "Deliverability",
+    "summary": "Reputation, list quality, bounces, and inbox placement.",
+    "order": 3
+  },
+  {
+    "slug": "accessibility",
+    "title": "Accessibility",
+    "summary": "Readable, operable messages for people of all abilities.",
+    "order": 4
+  },
+  {
+    "slug": "rendering",
+    "title": "Rendering",
+    "summary": "HTML and CSS that survive real-world email clients.",
+    "order": 5
+  },
+  {
+    "slug": "privacy",
+    "title": "Privacy",
+    "summary": "Consent, tracking, data minimisation, and respectful measurement.",
+    "order": 6
+  },
+  {
+    "slug": "internationalisation",
+    "title": "Internationalisation",
+    "summary": "Unicode, language, direction, and international addresses.",
+    "order": 7
+  },
+  {
+    "slug": "lifecycle",
+    "title": "Lifecycle",
+    "summary": "Subscription, unsubscribe, complaints, retries, and expiry.",
+    "order": 8
+  },
+  {
+    "slug": "security",
+    "title": "Security",
+    "summary": "Injection, dangerous content, phishing resistance, and secrets.",
+    "order": 9
+  },
+  {
+    "slug": "automation",
+    "title": "Automation",
+    "summary": "Machine-readable actions, calendars, receipts, and agent use.",
+    "order": 10
+  }
+]

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="About the platform-agnostic email spec"
+  description="Learn how The Email Specification turns scattered RFCs, accessibility guidance, and provider requirements into one testable, open checklist."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">About</p><h1>One map of the email stack</h1><p class="lede">
+        Email is a chain of formats, DNS records, relays, filters, clients, and human
+        expectations. This project turns that chain into an auditable contract.
+      </p>
+    </div>
+  </header>
+  <article class="narrow section prose">
+    <h2>What this is</h2><p>
+      A provider-agnostic specification of observable outcomes. Each page states what the
+      requirement is, why it matters, how to implement it, common mistakes, and how to
+      verify the delivered result.
+    </p>
+    <h2>What this is not</h2><p>
+      It is not an ESP comparison, a template framework, legal advice, or a guarantee of
+      inbox placement. Standards define the floor; mailbox providers and recipients still
+      make their own decisions.
+    </p>
+    <h2>Open by design</h2><p>
+      Code is MIT licensed. Specification content is CC BY 4.0. Every topic cites its
+      sources and the repository accepts corrections.
+    </p>
+  </article>
+</BaseLayout>

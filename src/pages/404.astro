@@ -1,0 +1,22 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found in the email spec"
+  description="The requested Email Specification page does not exist. Browse the full specification or search for a related email requirement."
+  noindex
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">404</p><h1>This message could not be delivered</h1><p class="lede">
+        The address may have changed, or the page never existed.
+      </p><div class="actions">
+        <a class="button primary" href="/spec/">Browse the specification</a><a
+          class="button"
+          href="/search/">Search</a
+        >
+      </div>
+    </div>
+  </header>
+</BaseLayout>

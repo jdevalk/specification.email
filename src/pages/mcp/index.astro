@@ -1,0 +1,54 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { site } from "~/lib/site";
+---
+
+<BaseLayout
+  title="MCP server for email standards"
+  description="Connect an AI agent to the read-only Email Specification MCP server for search, topic retrieval, filtered lists, checklists, and change tracking."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">For agents</p><h1>The entire specification, over MCP</h1><p
+        class="lede"
+      >
+        The read-only server bundles the same Markdown used by this site. Search every
+        topic, fetch canonical guidance, build checklists, or ask what changed.
+      </p>
+    </div>
+  </header>
+  <div class="narrow section prose">
+    <h2>Endpoint</h2><pre><code>{site.mcp.endpoint}</code></pre>
+    <h2>Tools</h2><table>
+      <thead><tr><th>Tool</th><th>Purpose</th></tr></thead><tbody
+        ><tr><td><code>search</code></td><td>Ranked full-text search with excerpts.</td></tr
+        ><tr
+          ><td><code>list_topics</code></td><td
+            >Filter by category or requirement status.</td
+          ></tr
+        ><tr
+          ><td><code>get_topic</code></td><td>Fetch one complete topic as Markdown.</td></tr
+        ><tr><td><code>get_checklist</code></td><td>Generate an audit checklist.</td></tr
+        ><tr
+          ><td><code>get_categories</code></td><td>List categories and topic counts.</td
+          ></tr
+        ><tr><td><code>get_changes</code></td><td>Read the changelog since a date.</td></tr
+        ></tbody
+      >
+    </table>
+    <h2>
+      Client configuration
+    </h2><pre><code>{`{
+  "mcpServers": {
+    "email-spec": {
+      "transport": "http",
+      "url": "${site.mcp.endpoint}"
+    }
+  }
+}`}</code></pre>
+    <p>
+      Run the Worker locally from <code>mcp/</code> with <code>npm run dev</code>.
+      Deployment configuration is included but no deployment occurs automatically.
+    </p>
+  </div>
+</BaseLayout>

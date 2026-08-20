@@ -1,0 +1,5 @@
+Contact: https://github.com/jdevalk/specification.email/security/advisories/new
+Expires: 2027-08-20T00:00:00Z
+Preferred-Languages: en, nl
+Canonical: https://specification.email/.well-known/security.txt
+Policy: https://github.com/jdevalk/specification.email/security/policy

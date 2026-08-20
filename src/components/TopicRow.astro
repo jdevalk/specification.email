@@ -1,0 +1,19 @@
+---
+import StatusBadge from "./StatusBadge.astro";
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  status: string;
+}
+const { href, title, summary, status } = Astro.props;
+---
+
+<a class="topic-row" href={href}>
+  <StatusBadge status={status} />
+  <span>
+    <h2>{title}</h2>
+    <p>{summary}</p>
+  </span>
+  <span aria-hidden="true">→</span>
+</a>

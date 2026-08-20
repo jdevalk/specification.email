@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { categories } from "~/lib/site";
+
+const topics = await getCollection("spec", ({ data }) => !data.draft);
+---
+
+<BaseLayout
+  title="The complete email specification"
+  description="Browse sourced requirements for email format, authentication, deliverability, rendering, accessibility, privacy, security, and automation."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">Specification</p><h1>Everything a good email does</h1><p
+        class="lede"
+      >
+        Requirements are grouped by the part of the email system they affect. Each topic is
+        testable and links to its source standard.
+      </p>
+    </div>
+  </header>
+  <section class="container section">
+    <div class="grid">
+      {
+        categories.map((category) => {
+          const count = topics.filter(
+            (topic) => topic.data.category === category.slug,
+          ).length;
+          return (
+            <a class="card" href={`/spec/${category.slug}/`}>
+              <>
+                <span class="count">{count} topics</span>
+                <h2>{category.title}</h2>
+                <p>{category.summary}</p>
+              </>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>

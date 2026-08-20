@@ -1,0 +1,22 @@
+{
+  "protocolVersion": "1.0",
+  "name": "The Email Specification",
+  "description": "Search and retrieve sourced email requirements for humans and agents.",
+  "url": "https://mcp.specification.email/a2a/v1",
+  "version": "0.1.0",
+  "capabilities": { "streaming": false, "pushNotifications": false },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/markdown", "text/plain"],
+  "skills": [
+    {
+      "id": "search-spec",
+      "name": "Search email standards",
+      "description": "Ranked search across every specification page."
+    },
+    {
+      "id": "audit-email",
+      "name": "Build an email audit",
+      "description": "Return a category- and status-filtered email checklist."
+    }
+  ]
+}

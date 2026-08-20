@@ -1,0 +1,140 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { categories } from "~/lib/site";
+
+const topics = await getCollection("spec", ({ data }) => !data.draft);
+const counts = Object.fromEntries(
+  categories.map((category) => [
+    category.slug,
+    topics.filter((topic) => topic.data.category === category.slug).length,
+  ]),
+);
+const changes = (await getCollection("changelog", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.localeCompare(a.data.date))
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="Email standards for better messages"
+  description="Build reliable email with sourced guidance for authentication, deliverability, accessibility, privacy, security, and client rendering."
+>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">The platform-agnostic email standard</p>
+        <h1>What a good email does.</h1>
+        <p class="lede">
+          A sourced specification for every technical detail that matters: from <code
+            >From:</code
+          > and MIME to DMARC, one-click unsubscribe, accessible HTML, and dark mode. Written
+          for humans and agents.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="/spec/">Browse all {topics.length} topics →</a>
+          <a class="button" href="/checklist/">Get the checklist</a>
+          <a class="button" href="/mcp/">Connect an agent</a>
+        </div>
+      </div>
+      <aside class="use-card">
+        <p class="eyebrow">How to use this site</p>
+        <ol>
+          <li>
+            <span
+              ><strong>Audit</strong>Run the checklist against a message or sending domain.</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>Learn</strong>Open an item for the requirement, rationale,
+              implementation, and verification.</span
+            >
+          </li>
+          <li>
+            <span
+              ><strong>Improve</strong>Fix what is missing, send test messages, and
+              re-check.</span
+            >
+          </li>
+        </ol>
+      </aside>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section-header">
+      <div><p class="eyebrow">The whole message</p><h2>Ten parts of good email</h2></div><a
+        href="/spec/">Browse specification →</a
+      >
+    </div>
+    <div class="grid">
+      {
+        categories.map((category) => (
+          <a class="card" href={`/spec/${category.slug}/`}>
+            <span class="count">
+              {String(category.order).padStart(2, "0")} · {counts[category.slug]} topics
+            </span>
+            <>
+              <h3>{category.title}</h3>
+              <p>{category.summary}</p>
+            </>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="principles section">
+    <div class="container">
+      <div class="section-header">
+        <div><p class="eyebrow">Principles</p><h2>One contract, many clients</h2></div>
+      </div>
+      <div class="principles-grid">
+        <div class="principle">
+          <span>01</span><div>
+            <h3>Standards, not folklore</h3><p>
+              Every topic cites the RFC, W3C guidance, or authoritative operator
+              documentation behind it.
+            </p>
+          </div>
+        </div>
+        <div class="principle">
+          <span>02</span><div>
+            <h3>Provider-agnostic</h3><p>
+              The outcome matters. Use any ESP, MTA, framework, or template system that can
+              meet it.
+            </p>
+          </div>
+        </div>
+        <div class="principle">
+          <span>03</span><div>
+            <h3>Test the delivered message</h3><p>
+              Generated source is not the result. Verify what arrives after relays, filters,
+              and clients touch it.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container section">
+    <div class="section-header">
+      <div><p class="eyebrow">Living specification</p><h2>Recently changed</h2></div><a
+        href="/changelog/">Full changelog →</a
+      >
+    </div>
+    <ol class="timeline">
+      {
+        changes.map((change) => (
+          <li>
+            <>
+              <time datetime={change.data.date}>{change.data.date}</time>
+              <h3>{change.data.title}</h3>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</BaseLayout>

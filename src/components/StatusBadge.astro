@@ -1,0 +1,9 @@
+---
+import { statusLabel } from "~/lib/site";
+interface Props {
+  status: string;
+}
+const { status } = Astro.props;
+---
+
+<span class={`status status-${status}`}>{statusLabel[status] ?? status}</span>

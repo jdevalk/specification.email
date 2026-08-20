@@ -1,0 +1,110 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import StatusBadge from "~/components/StatusBadge.astro";
+import { categoryFor, site } from "~/lib/site";
+
+interface Props {
+  title: string;
+  summary: string;
+  status: string;
+  category: string;
+  sources: { title: string; url: string; publisher?: string }[];
+  updated?: string;
+  slug: string;
+}
+const { title, summary, status, category, sources, updated, slug } = Astro.props;
+const categoryInfo = categoryFor(category);
+const canonical = `${site.url}/spec/${category}/${slug}/`;
+const graph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "@id": `${site.url}/#website`, name: site.name, url: site.url },
+    {
+      "@type": "TechArticle",
+      "@id": `${canonical}#article`,
+      headline: title,
+      description: summary,
+      url: canonical,
+      isPartOf: { "@id": `${site.url}/#website` },
+      author: { "@type": "Person", name: site.author.name, url: site.author.url },
+      ...(updated ? { dateModified: updated } : {}),
+      citation: sources.map((source) => source.url),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Specification",
+          item: `${site.url}/spec/`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: categoryInfo?.title,
+          item: `${site.url}/spec/${category}/`,
+        },
+        { "@type": "ListItem", position: 3, name: title, item: canonical },
+      ],
+    },
+  ],
+};
+---
+
+<BaseLayout title={title} description={summary} ogType="article" graph={graph}>
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/spec/">Specification</a> / <a href={`/spec/${category}/`}
+          >{categoryInfo?.title}</a
+        >
+      </nav>
+      <h1>{title}</h1>
+      <p class="lede">{summary}</p>
+    </div>
+  </header>
+  <div class="container section spec-shell">
+    <article class="prose" data-pagefind-body>
+      <slot />
+      <section class="sources" aria-labelledby="sources-title">
+        <h2 id="sources-title">Sources</h2>
+        <ol>
+          {
+            sources.map((source) => (
+              <li>
+                <a href={source.url} rel="external">
+                  {source.title}
+                </a>
+                {source.publisher ? ` — ${source.publisher}` : ""}
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    </article>
+    <aside class="spec-meta" aria-label="Specification metadata">
+      <StatusBadge status={status} />
+      <dl>
+        <div>
+          <dt>Category</dt><dd><a href={`/spec/${category}/`}>{categoryInfo?.title}</a></dd>
+        </div>
+        {
+          updated && (
+            <div>
+              <>
+                <dt>Updated</dt>
+                <dd>
+                  <time datetime={updated}>{updated}</time>
+                </dd>
+              </>
+            </div>
+          )
+        }
+        <div>
+          <dt>For agents</dt><dd><a href={`/spec/${category}/${slug}.md`}>Markdown</a></dd>
+        </div>
+      </dl>
+    </aside>
+  </div>
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Search email standards and requirements"
+  description="Search every topic in The Email Specification, including RFC-backed guidance for authentication, deliverability, rendering, privacy, and accessibility."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">Search</p><h1>Find a requirement</h1><p class="lede">
+        Search titles, summaries, implementation guidance, mistakes, verification steps, and
+        source names.
+      </p>
+    </div>
+  </header>
+  <section class="narrow section">
+    <label for="search-input">Search the specification</label><input
+      class="search-box"
+      id="search-input"
+      type="search"
+      placeholder="Try DKIM, dark mode, unsubscribe…"
+      autocomplete="off"
+    /><div id="search-results" class="search-results" aria-live="polite"></div>
+  </section>
+  <script is:inline src="/search.js"></script>
+</BaseLayout>

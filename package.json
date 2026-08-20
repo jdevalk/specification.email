@@ -1,0 +1,43 @@
+{
+  "name": "specification-email",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The Email Specification — what a good email does, from headers to accessible HTML.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "mcp"
+  ],
+  "scripts": {
+    "prebuild": "node scripts/generate-assets.mjs",
+    "dev": "astro dev --port 31337 --host",
+    "build": "astro build && pagefind --site dist && node scripts/build-knowledge.mjs",
+    "preview": "astro preview --port 31337 --host",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "mcp:data": "npm run build:data --workspace mcp",
+    "mcp:dev": "npm run dev --workspace mcp",
+    "mcp:typecheck": "npm run typecheck --workspace mcp",
+    "mcp:dry-run": "npm run dry-run --workspace mcp"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@jdevalk/astro-seo-graph": "^2.2.0",
+    "astro": "^7.2.4",
+    "yaml": "^2.8.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "pagefind": "^1.5.2",
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "png-to-ico": "^3.0.2",
+    "sharp": "^0.35.3",
+    "typescript": "^6.0.3"
+  }
+}

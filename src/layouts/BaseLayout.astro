@@ -1,0 +1,109 @@
+---
+import "~/styles/global.css";
+import Seo from "@jdevalk/astro-seo-graph/Seo.astro";
+import SiteHeader from "~/components/SiteHeader.astro";
+import SiteFooter from "~/components/SiteFooter.astro";
+import { site } from "~/lib/site";
+
+interface Props {
+  title: string;
+  description: string;
+  bare?: boolean;
+  noindex?: boolean;
+  ogType?: "website" | "article";
+  graph?: Record<string, unknown>;
+}
+const {
+  title,
+  description,
+  bare = false,
+  noindex = false,
+  ogType = "website",
+  graph,
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const defaultGraph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${site.url}/#website`,
+      name: site.name,
+      url: site.url,
+      description: site.description,
+      inLanguage: "en",
+      publisher: { "@id": `${site.url}/#person` },
+    },
+    {
+      "@type": "Person",
+      "@id": `${site.url}/#person`,
+      name: site.author.name,
+      url: site.author.url,
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content={site.themeColor} />
+    <Seo
+      title={title}
+      titleTemplate={`%s · ${site.shortName}`}
+      description={description}
+      canonical={canonical}
+      ogType={ogType}
+      ogImage={`${site.url}/og-default.jpg`}
+      ogImageAlt="The Email Specification — what a good email does"
+      ogImageWidth={1200}
+      ogImageHeight={675}
+      siteName={site.name}
+      author={site.author.name}
+      noindex={noindex}
+      graph={graph ?? defaultGraph}
+      extraLinks={[
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "manifest", href: "/site.webmanifest" },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: `${site.name} changes`,
+          href: "/rss.xml",
+        },
+        { rel: "sitemap", href: "/sitemap-index.xml" },
+      ]}
+    />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    {!bare && <SiteHeader />}
+    <main id="main"><slot /></main>
+    <aside class="sibling-banner" aria-label="Related specification">
+      <div class="container sibling-banner-inner">
+        <div>
+          <p class="eyebrow">Also in the specification family</p>
+          <h2>Building for the web too?</h2>
+          <p>
+            Explore The Website Specification: a platform-agnostic guide to what a good
+            website does.
+          </p>
+        </div>
+        <a
+          class="button website-button"
+          href="https://specification.website"
+          rel="external"
+        >
+          Visit specification.website →
+        </a>
+      </div>
+    </aside>
+    <SiteFooter />
+  </body>
+</html>

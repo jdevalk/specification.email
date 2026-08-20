@@ -1,0 +1,40 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+const entries = (await getCollection("considered", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.localeCompare(a.data.date),
+);
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })),
+);
+---
+
+<BaseLayout
+  title="Email standards considered but excluded"
+  description="See which email technologies were evaluated for The Email Specification, why they remain outside the core, and what would trigger a review."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">Decision register</p><h1>Considered, not included</h1><p
+        class="lede"
+      >
+        A specification should show its boundaries. These technologies are real, but not yet
+        universal enough, testable enough, or in scope.
+      </p>
+    </div>
+  </header>
+  <div class="narrow section">
+    {
+      rendered.map(({ entry, Content }) => (
+        <article class="prose">
+          <Content />
+          {entry.data.revisit && (
+            <p>
+              <strong>Revisit when:</strong> {entry.data.revisit}
+            </p>
+          )}
+        </article>
+      ))
+    }
+  </div>
+</BaseLayout>

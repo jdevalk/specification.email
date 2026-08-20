@@ -1,0 +1,21 @@
+---
+import { site } from "~/lib/site";
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <strong>{site.name}</strong>
+      <p>{site.tagline}</p>
+      <p>Content: CC BY 4.0 · Code: MIT</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/about/">About</a>
+      <a href="/considered/">Considered</a>
+      <a href="/rss.xml">RSS</a>
+      <a href="/llms.txt">llms.txt</a>
+      <a href="/schemamap.xml">Schema map</a>
+      <a href={site.repo} rel="external">GitHub</a>
+    </nav>
+  </div>
+</footer>

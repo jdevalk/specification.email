@@ -1,0 +1,40 @@
+---
+import { site } from "~/lib/site";
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label={`${site.name}, home`}>
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="22" height="22">
+          <rect
+            x="5"
+            y="8"
+            width="22"
+            height="16"
+            rx="2.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"></rect>
+          <path
+            d="m7 10 9 7 9-7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </span>
+      <span>{site.shortName}</span>
+    </a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="/spec/">Specification</a>
+      <a href="/checklist/">Checklist</a>
+      <a href="/changelog/">Changelog</a>
+      <a href="/mcp/">MCP</a>
+      <a class="search-link" href="/search/" aria-label="Search the specification"
+        >Search <span aria-hidden="true">⌕</span></a
+      >
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,3 @@
+# The Email Specification
+
+> Build-time placeholder. The Astro SEO integration replaces this file with the complete page index after rendering.

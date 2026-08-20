@@ -1,0 +1,42 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+const changes = (await getCollection("changelog", ({ data }) => !data.draft)).sort((a, b) =>
+  b.data.date.localeCompare(a.data.date),
+);
+const rendered = await Promise.all(
+  changes.map(async (change) => ({ change, Content: (await render(change)).Content })),
+);
+---
+
+<BaseLayout
+  title="Email specification changelog"
+  description="Follow additions, status changes, and corrections across The Email Specification’s sourced requirements and machine-readable outputs."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">Living standard</p><h1>Changelog</h1><p class="lede">
+        Material changes are recorded so people and agents can re-audit only what changed.
+      </p>
+    </div>
+  </header>
+  <div class="narrow section">
+    <ol class="timeline">
+      {
+        rendered.map(({ change, Content }) => (
+          <li id={change.id}>
+            <>
+              <time datetime={change.data.date}>
+                {change.data.date} · {change.data.type}
+              </time>
+              <h2>{change.data.title}</h2>
+              <div class="prose">
+                <Content />
+              </div>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</BaseLayout>

@@ -1,0 +1,46 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import TopicRow from "~/components/TopicRow.astro";
+import { categories, categoryFor } from "~/lib/site";
+
+export function getStaticPaths() {
+  return categories.map((category) => ({ params: { category: category.slug } }));
+}
+const { category } = Astro.params;
+const info = categoryFor(category ?? "");
+if (!info) return Astro.redirect("/spec/");
+const topics = (
+  await getCollection("spec", ({ data }) => !data.draft && data.category === category)
+).sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+---
+
+<BaseLayout
+  title={`${info.title} email requirements`}
+  description={`${info.summary} Browse ${topics.length} sourced, testable requirements in The Email Specification.`}
+>
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="/spec/">Specification</a> / {info.title}</nav><h1>
+        {info.title}
+      </h1><p class="lede">{info.summary}</p>
+    </div>
+  </header>
+  <section class="container section">
+    <div class="topic-list">
+      {
+        topics.map((topic) => {
+          const slug = topic.data.slug ?? topic.id.split("/").pop();
+          return (
+            <TopicRow
+              href={`/spec/${category}/${slug}/`}
+              title={topic.data.title}
+              summary={topic.data.summary}
+              status={topic.data.status}
+            />
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>

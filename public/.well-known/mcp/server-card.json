@@ -1,0 +1,8 @@
+{
+  "name": "specification-email",
+  "version": "0.1.0",
+  "title": "The Email Specification",
+  "description": "Read-only tools for searching and auditing email standards.",
+  "transport": { "type": "streamable-http", "url": "https://mcp.specification.email/mcp" },
+  "capabilities": { "tools": true, "resources": false, "prompts": true }
+}

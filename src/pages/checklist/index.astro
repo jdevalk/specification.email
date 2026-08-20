@@ -1,0 +1,59 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import StatusBadge from "~/components/StatusBadge.astro";
+import { categories } from "~/lib/site";
+const topics = (await getCollection("spec", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout
+  title="Email quality and compliance checklist"
+  description="Audit a delivered email and its sending domain against sourced requirements for authentication, accessibility, security, privacy, and rendering."
+>
+  <header class="page-head">
+    <div class="container">
+      <p class="eyebrow">Checklist</p><h1>Audit an email, end to end</h1><p class="lede">
+        Check the delivered message, not only the template. Headers, authentication results,
+        links, rendering, and lifecycle behavior all count.
+      </p><div class="actions">
+        <a class="button" href="/checklist.md">Download Markdown</a><button
+          class="button"
+          type="button"
+          onclick="window.print()">Print checklist</button
+        >
+      </div>
+    </div>
+  </header>
+  <div class="narrow section">
+    {
+      categories.map((category) => {
+        const items = topics.filter((topic) => topic.data.category === category.slug);
+        return (
+          items.length > 0 && (
+            <section class="check-group">
+              <p class="section-intro">{category.summary}</p>
+              {items.map((topic) => {
+                const slug = topic.data.slug ?? topic.id.split("/").pop();
+                return (
+                  <label class="check-item">
+                    <input type="checkbox" />
+                    <StatusBadge status={topic.data.status} />
+                    <span>
+                      <strong>
+                        <a href={`/spec/${category.slug}/${slug}/`}>{topic.data.title}</a>
+                      </strong>
+                      <br />
+                      {topic.data.summary}
+                    </span>
+                  </label>
+                );
+              })}
+            </section>
+          )
+        );
+      })
+    }
+  </div>
+</BaseLayout>

@@ -1,0 +1,27 @@
+{
+  "name": "specification-email-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP and A2A Worker exposing The Email Specification.",
+  "license": "MIT",
+  "scripts": {
+    "build:data": "node scripts/build-data.mjs",
+    "predev": "npm run build:data",
+    "dev": "wrangler dev --port 31338",
+    "predeploy": "npm run build:data",
+    "deploy": "wrangler deploy",
+    "pretypecheck": "npm run build:data",
+    "typecheck": "tsc --noEmit",
+    "predry-run": "npm run build:data",
+    "dry-run": "wrangler deploy --dry-run"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260820.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.124.0"
+  }
+}

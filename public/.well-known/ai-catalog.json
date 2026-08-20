@@ -1,0 +1,19 @@
+{
+  "version": "0.9",
+  "entries": [
+    {
+      "name": "Email Specification MCP",
+      "type": "application/json",
+      "mediaType": "application/json",
+      "url": "https://specification.email/.well-known/mcp/server-card.json",
+      "representativeQueries": ["Which DMARC requirements should I audit?"]
+    },
+    {
+      "name": "Email Specification OKF bundle",
+      "type": "application/okf-bundle+gzip",
+      "mediaType": "application/okf-bundle+gzip",
+      "url": "https://specification.email/okf.tar.gz",
+      "representativeQueries": ["What does a good transactional email require?"]
+    }
+  ]
+}
