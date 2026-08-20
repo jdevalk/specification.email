@@ -6,6 +6,8 @@ A public, stateless, read-only Cloudflare Worker over the same Markdown corpus a
 
 `search`, `list_topics`, `get_topic`, `get_checklist`, `get_categories`, and `get_changes`.
 
+`search` covers both the specification corpus and the decision register at [/considered](https://specification.email/considered/), so a query about an excluded technology returns the recorded reason rather than no match. Excluded entries are reported under a separate heading and are never presented as requirements.
+
 ## Local development
 
 ```sh

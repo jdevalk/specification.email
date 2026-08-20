@@ -29,12 +29,22 @@ export interface Change {
   relatedSlugs: string[];
   body: string;
 }
+export interface Considered {
+  title: string;
+  date: string;
+  reason: "too-early" | "out-of-scope" | "too-narrow";
+  revisit: string | null;
+  sources: Source[];
+  url: string;
+  body: string;
+}
 export interface Manifest {
   generatedAt: string;
   site: string;
   categories: Category[];
   topics: Topic[];
   changelog: Change[];
+  considered: Considered[];
 }
 export interface RpcRequest {
   jsonrpc: "2.0";

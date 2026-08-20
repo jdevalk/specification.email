@@ -7,6 +7,7 @@ const here = fileURLToPath(new URL(".", import.meta.url));
 const root = join(here, "..", "..");
 const specRoot = join(root, "src", "content", "spec");
 const changelogRoot = join(root, "src", "content", "changelog");
+const consideredRoot = join(root, "src", "content", "considered");
 const categories = JSON.parse(
   await readFile(join(root, "src", "data", "categories.json"), "utf8"),
 );
@@ -67,13 +68,29 @@ for await (const file of walk(changelogRoot)) {
     });
 }
 changelog.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+
+const considered = [];
+for await (const file of walk(consideredRoot)) {
+  const { data, body } = parse(await readFile(file, "utf8"));
+  if (!data.draft)
+    considered.push({
+      title: data.title,
+      date: data.date,
+      reason: data.reason,
+      revisit: data.revisit ?? null,
+      sources: data.sources ?? [],
+      url: `${site}/considered/`,
+      body,
+    });
+}
+considered.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
 const generatedAt = process.env.SOURCE_DATE_EPOCH
   ? new Date(Number(process.env.SOURCE_DATE_EPOCH) * 1000).toISOString()
   : new Date().toISOString();
 await writeFile(
   output,
-  JSON.stringify({ generatedAt, site, categories, topics, changelog }, null, 2),
+  JSON.stringify({ generatedAt, site, categories, topics, changelog, considered }, null, 2),
 );
 console.log(
-  `✓ wrote ${relative(here, output)} — ${topics.length} topics, ${changelog.length} changes`,
+  `✓ wrote ${relative(here, output)} — ${topics.length} topics, ${changelog.length} changes, ${considered.length} considered`,
 );

@@ -1,4 +1,4 @@
-import type { Manifest, Status, Topic } from "./types";
+import type { Considered, Manifest, Status, Topic } from "./types";
 
 const statuses = new Set<Status>(["required", "recommended", "optional", "avoid"]);
 const text = (value: unknown) => (typeof value === "string" ? value : undefined);
@@ -44,11 +44,30 @@ function rank(topic: Topic, query: string): number {
   );
 }
 
+function rankConsidered(entry: Considered, query: string): number {
+  const terms = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((term) => term.length > 1);
+  const title = entry.title.toLowerCase();
+  const revisit = (entry.revisit ?? "").toLowerCase();
+  const body = entry.body.toLowerCase();
+  return terms.reduce(
+    (score, term) =>
+      score +
+      (title.includes(term) ? 8 : 0) +
+      (revisit.includes(term) ? 3 : 0) +
+      Math.min(body.split(term).length - 1, 5),
+    title.includes(query.toLowerCase()) ? 12 : 0,
+  );
+}
+
 export const tools = [
   {
     name: "search",
     title: "Search email standards",
-    description: "Ranked full-text search across every Email Specification topic.",
+    description:
+      "Ranked full-text search across every Email Specification topic, including technologies deliberately considered and left out of the specification.",
     inputSchema: {
       type: "object",
       properties: {
@@ -137,14 +156,35 @@ export function callTool(manifest: Manifest, name: unknown, args: Record<string,
         .filter((item) => item.score > 0)
         .sort((a, b) => b.score - a.score || a.topic.order - b.topic.order)
         .slice(0, limit);
-      const plain = matches.length
-        ? matches
-            .map(
-              ({ topic, score }) =>
-                `### ${topic.title}\n- ${topic.status} · ${topic.category} · score ${score}\n- ${topic.url}\n\n${topic.summary}`,
-            )
-            .join("\n\n")
-        : `No topics matched “${query}”.`;
+      const excluded = manifest.considered
+        .map((entry) => ({ entry, score: rankConsidered(entry, query) }))
+        .filter((item) => item.score >= 3)
+        .sort((a, b) => b.score - a.score || a.entry.title.localeCompare(b.entry.title))
+        .slice(0, limit);
+      const topicBlock = matches
+        .map(
+          ({ topic, score }) =>
+            `### ${topic.title}\n- ${topic.status} · ${topic.category} · score ${score}\n- ${topic.url}\n\n${topic.summary}`,
+        )
+        .join("\n\n");
+      const excludedBlock = excluded.length
+        ? [
+            "## Considered and not included",
+            "",
+            "These are not specification requirements. The specification evaluated them and deliberately left them out.",
+            "",
+            excluded
+              .map(
+                ({ entry, score }) =>
+                  `### ${entry.title}\n- considered · ${entry.reason} · not a requirement · score ${score}\n- ${entry.url}\n\n${entry.body}${entry.revisit ? `\n\nRevisit when: ${entry.revisit}` : ""}`,
+              )
+              .join("\n\n"),
+          ].join("\n")
+        : "";
+      const plain =
+        matches.length || excluded.length
+          ? [topicBlock, excludedBlock].filter(Boolean).join("\n\n")
+          : `No topics matched “${query}”.`;
       return result(plain, {
         query,
         count: matches.length,
@@ -156,6 +196,15 @@ export function callTool(manifest: Manifest, name: unknown, args: Record<string,
           url: topic.url,
           mdUrl: topic.mdUrl,
           summary: topic.summary,
+          score,
+        })),
+        consideredCount: excluded.length,
+        considered: excluded.map(({ entry, score }) => ({
+          title: entry.title,
+          reason: entry.reason,
+          revisit: entry.revisit,
+          url: entry.url,
+          sources: entry.sources,
           score,
         })),
       });
