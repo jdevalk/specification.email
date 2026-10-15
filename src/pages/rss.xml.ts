@@ -11,13 +11,21 @@ export async function GET() {
     description:
       "Additions, corrections, removals, and status changes in the email specification.",
     site: site.url,
-    items: changes.map((change) => ({
-      title: change.data.title,
-      pubDate: new Date(`${change.data.date}T12:00:00Z`),
-      description: (change.body ?? "").replace(/\s+/g, " ").trim(),
-      link: `/changelog/#${change.id}`,
-      content: change.body ?? "",
-    })),
+    items: changes.map((change) => {
+      const body = change.body ?? "";
+      return {
+        title: change.data.title,
+        pubDate: new Date(`${change.data.date}T12:00:00Z`),
+        // Plain-text summary: keep link text, drop the Markdown link syntax.
+        description: body
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+          .replace(/\s+/g, " ")
+          .trim(),
+        link: `/changelog/#${change.id}`,
+        // Entries link root-relative so they work in dev; feed readers need absolute URLs.
+        content: body.replace(/\]\(\//g, `](${site.url}/`),
+      };
+    }),
     customData: "<language>en</language>",
   });
 }

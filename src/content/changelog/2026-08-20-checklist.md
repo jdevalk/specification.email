@@ -5,4 +5,4 @@ type: added
 relatedSlugs: [dmarc-policy, color-and-contrast]
 ---
 
-Every live requirement now appears in the interactive checklist and its Markdown equivalent, grouped by category and labeled by requirement status.
+Every live requirement now appears in the [interactive checklist](/checklist/) and its [Markdown equivalent](/checklist.md), grouped by category and labeled by requirement status.

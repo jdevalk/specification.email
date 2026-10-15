@@ -64,7 +64,8 @@ for await (const file of walk(changelogRoot)) {
       date: data.date,
       type: data.type ?? "changed",
       relatedSlugs: data.relatedSlugs ?? [],
-      body,
+      // Entries link root-relative so they work in dev; MCP clients need absolute URLs.
+      body: body.replace(/\]\(\//g, `](${site}/`),
     });
 }
 changelog.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
