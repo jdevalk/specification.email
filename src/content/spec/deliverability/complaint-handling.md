@@ -6,9 +6,9 @@ status: required
 order: 3
 relatedSlugs: [list-hygiene, one-click-unsubscribe]
 sources:
-  - title: Complaint Feedback Loop operational recommendations
-    url: https://www.m3aawg.org/sites/default/files/m3aawg-feedback-loop-best-common-practices-2018-07.pdf
-    publisher: M3AAWG
+  - title: RFC 6449 — Complaint Feedback Loop Operational Recommendations
+    url: https://www.rfc-editor.org/rfc/rfc6449
+    publisher: IETF
 ---
 
 ## What it is
