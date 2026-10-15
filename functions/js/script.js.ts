@@ -12,6 +12,7 @@ export const onRequest: PagesFunction = async ({ request }) => {
       cf: { cacheTtlByStatus: { "200-299": 3600, "300-599": -1 } },
     });
     if (!upstream.ok) {
+      console.error("Plausible script upstream status", upstream.status);
       return new Response(null, {
         status: 502,
         headers: { "Cache-Control": "no-store" },
@@ -25,7 +26,8 @@ export const onRequest: PagesFunction = async ({ request }) => {
         "X-Content-Type-Options": "nosniff",
       },
     });
-  } catch {
+  } catch (error) {
+    console.error("Plausible script proxy failed", String(error));
     return new Response(null, {
       status: 502,
       headers: { "Cache-Control": "no-store" },

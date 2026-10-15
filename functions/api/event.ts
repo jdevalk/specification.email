@@ -37,7 +37,8 @@ export const onRequest: PagesFunction = async ({ request }) => {
       status: upstream.status,
       headers: resultHeaders,
     });
-  } catch {
+  } catch (error) {
+    console.error("Plausible event proxy failed", String(error));
     return new Response(null, { status: 502, headers: responseHeaders });
   }
 };
