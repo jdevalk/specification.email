@@ -20,7 +20,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: lycheeverse/lychee-action@v2
         with:
-          # Changelog entries link root-relative (/spec/...). --root-dir lets lychee resolve those to local
-          # files, which this external check then skips, like links to the site itself.
-          args: --no-progress --exclude-loopback --root-dir ${{ github.workspace }} --base-url https://specification.email --exclude "^https://specification[.]email" --exclude "^file://" "./**/*.md" "./**/*.astro"
+          args: --no-progress --exclude-loopback --base-url https://specification.email --exclude "^https://specification[.]email" "./**/*.md" "./**/*.astro"
           fail: true
