@@ -3,8 +3,8 @@ title: SMTP MTA Strict Transport Security (MTA-STS)
 category: authentication
 summary: Publish an MTA-STS policy so sending servers require valid TLS to your MX hosts instead of silently falling back to plaintext.
 status: recommended
-order: 4
-relatedSlugs: [tls-reporting, dane-for-smtp]
+order: 5
+relatedSlugs: [starttls, tls-reporting, dane-for-smtp]
 sources:
   - title: RFC 8461 — SMTP MTA Strict Transport Security (MTA-STS)
     url: https://www.rfc-editor.org/rfc/rfc8461
@@ -24,7 +24,7 @@ Opportunistic STARTTLS can be stripped by anyone on the path, and the sender fal
 
 ## How to implement
 
-Give every MX host a certificate from a public CA that matches its hostname. Serve the policy over HTTPS with `version: STSv1`, `mode`, every `mx` pattern, and `max_age`. Publish `_mta-sts.example.com TXT "v=STSv1; id=…"` and change the `id` whenever the policy changes. Start in `testing` mode with TLS reporting, then move to `enforce`.
+Offer [STARTTLS](/spec/authentication/starttls/) on every MX host with a certificate from a public CA that matches its hostname. Serve the policy over HTTPS with `version: STSv1`, `mode`, every `mx` pattern, and `max_age`. Publish `_mta-sts.example.com TXT "v=STSv1; id=…"` and change the `id` whenever the policy changes. Start in `testing` mode with TLS reporting, then move to `enforce`.
 
 ## Common mistakes
 

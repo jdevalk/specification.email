@@ -3,8 +3,8 @@ title: DANE for SMTP
 category: authentication
 summary: Publish DNSSEC-signed TLSA records for your MX hosts so sending servers can verify their certificates without trusting the CA system alone.
 status: recommended
-order: 6
-relatedSlugs: [mta-sts, tls-reporting]
+order: 7
+relatedSlugs: [starttls, mta-sts, tls-reporting]
 sources:
   - title: RFC 7672 — SMTP Security via Opportunistic DANE TLS
     url: https://www.rfc-editor.org/rfc/rfc7672
@@ -27,7 +27,7 @@ It closes the same downgrade gap as MTA-STS, but through DNS instead of a web se
 
 ## How to implement
 
-Sign both the domain and the MX host's zone with DNSSEC. Publish a `3 1 1` TLSA record (SHA-256 of the server's public key) for each MX, or `2 1 1` for the issuing CA. Before a key or certificate changes, publish the new record next to the old one and wait at least the record's TTL before switching.
+Each MX host must already offer [STARTTLS](/spec/authentication/starttls/). Sign both the domain and the MX host's zone with DNSSEC. Publish a `3 1 1` TLSA record (SHA-256 of the server's public key) for each MX, or `2 1 1` for the issuing CA. Before a key or certificate changes, publish the new record next to the old one and wait at least the record's TTL before switching.
 
 ## Common mistakes
 

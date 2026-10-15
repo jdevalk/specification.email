@@ -3,7 +3,7 @@ title: SMTP TLS Reporting (TLS-RPT)
 category: authentication
 summary: Publish a TLS-RPT record so sending servers report failed TLS connections to your mail servers, and read the reports.
 status: recommended
-order: 5
+order: 6
 relatedSlugs: [mta-sts, dane-for-smtp]
 sources:
   - title: RFC 8460 — SMTP TLS Reporting
