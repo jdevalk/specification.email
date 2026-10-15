@@ -30,6 +30,12 @@ npm run mcp:typecheck
 npm run mcp:dry-run
 ```
 
+## Analytics
+
+Plausible runs only on `specification.email`, so local development and preview deployments do not generate pageviews. The shared layout loads `/js/script.js` and sends events to `/api/event`, following [Plausible's proxy setup](https://plausible.io/docs/proxy/guides/cloudflare).
+
+Both routes are Cloudflare Pages Functions. The script proxy uses the site's `pa-I1I9vqcv36EL957gGy5_P.js` tracker and caches successful responses for one hour. The event proxy forwards the visitor IP and user agent, strips cookies and credentials, and never caches events. No additional bindings, secrets, or CSP changes are needed. Deploy the `functions` directory together with the site using the existing Pages deployment workflow.
+
 ## Diagnostics
 
 Browser errors and 10% of page loads are reported to GlitchTip with `@sentry/browser` (`src/components/Diagnostics.astro`). The SDK sends envelopes to the same-origin tunnel `/api/diagnostics`, a Pages Function (`functions/api/diagnostics.ts`) that forwards one error or transaction per request to a fixed GlitchTip project. It enforces the site Origin, a 64 KB limit, 20 requests per minute per IP and 2,000 per day, using HMAC-hashed IPs in D1 that expire within minutes, and it scrubs user data, cookies, headers, bodies, and query strings.
