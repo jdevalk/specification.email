@@ -1,0 +1,71 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { site } from "~/lib/site";
+---
+
+<BaseLayout
+  title="Contribute to the email spec"
+  description="How to propose new topics, corrections, and status changes to The Email Specification, and what every change needs before it is merged."
+>
+  <header class="page-head">
+    <div class="container">
+      <nav class="breadcrumb"><a href="/">Home</a> / Contribute</nav>
+      <h1>Contribute</h1><p class="lede">
+        The spec is <a href={site.repo} rel="external">open on GitHub</a>. Issues, pull
+        requests, and disagreements are welcome. Three rules.
+      </p>
+    </div>
+  </header>
+  <article class="narrow section prose">
+    <h2 id="cite-your-sources">1. Cite your sources</h2>
+    <p>
+      Every topic lists at least one source. If you add or change a claim, link the RFC, the
+      W3C guidance, or the provider documentation behind it. No source, no merge.
+    </p>
+
+    <h2 id="stay-provider-agnostic">2. Stay provider-agnostic</h2>
+    <p>
+      The spec describes outcomes, not one provider's implementation. “Publish a DMARC
+      policy” is in scope. “Click this toggle in your ESP's dashboard” is not; link to the
+      provider's own documentation instead.
+    </p>
+
+    <h2 id="be-honest-about-status">3. Be honest about status</h2>
+    <p>
+      <strong>Required</strong> means mail breaks or excludes people without it. <strong
+        >Recommended</strong
+      > means a modern sender should do it. <strong>Optional</strong> means it depends.
+      <strong>Avoid</strong> means it is outdated or harmful. If a status is wrong, fix it, with
+      your reasoning in the pull request.
+    </p>
+
+    <h2 id="how-to-propose-a-change">How to propose a change</h2>
+    <ol>
+      <li>
+        Open an <a href={`${site.repo}/issues`} rel="external">issue</a> describing the topic,
+        gap, or fix.
+      </li>
+      <li>
+        For a new topic, copy an existing file in <code
+          >src/content/spec/&lt;category&gt;/</code
+        > and adjust the front matter.
+      </li>
+      <li>
+        Add a dated entry under <code>src/content/changelog/</code> for any material change.
+      </li>
+      <li>
+        Run <code>npm run dev</code> locally on port 31337 and check the page renders. Before
+        you open the pull request, run <code>npm run build</code>, <code>npm run check</code
+        >,
+        <code>npm run mcp:typecheck</code>, and <code>npm run mcp:dry-run</code>.
+      </li>
+      <li>
+        Open a pull request. CI checks formatting and types, and builds the site and the MCP
+        server.
+      </li>
+    </ol>
+
+    <h2 id="repository">Repository</h2>
+    <p><a href={site.repo} rel="external">{site.repo}</a></p>
+  </article>
+</BaseLayout>

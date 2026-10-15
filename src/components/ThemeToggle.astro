@@ -1,0 +1,44 @@
+---
+// Two-state theme switch — knob slides between sun (light) and moon (dark).
+// Resolved state is owned by [data-theme] on <html>; this button's
+// aria-checked is kept in sync by /theme-toggle.js, which also persists the
+// choice in localStorage. The FOUC-free init in BaseLayout.astro guarantees
+// data-theme is set before paint, including for users with no stored choice
+// (it resolves to matchMedia at that point).
+---
+
+<button
+  type="button"
+  role="switch"
+  aria-checked="false"
+  aria-label="Switch to dark theme"
+  data-theme-toggle
+  class="theme-toggle"
+>
+  <span class="theme-toggle__track" aria-hidden="true">
+    <span class="theme-toggle__knob">
+      <svg
+        class="theme-toggle__icon theme-toggle__icon--sun"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        ><circle cx="12" cy="12" r="4"></circle><path
+          d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+        ></path></svg
+      >
+      <svg
+        class="theme-toggle__icon theme-toggle__icon--moon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.25"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        ><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg
+      >
+    </span>
+  </span>
+</button>

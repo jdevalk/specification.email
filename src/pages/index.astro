@@ -22,7 +22,6 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <p class="eyebrow">The platform-agnostic email standard</p>
         <h1>What a good email does.</h1>
         <p class="lede">
           A sourced specification for every technical detail that matters: from <code
@@ -36,25 +35,32 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
           <a class="button" href="/mcp/">Connect an agent</a>
         </div>
       </div>
-      <aside class="use-card">
-        <p class="eyebrow">How to use this site</p>
+      <aside class="use-card" aria-labelledby="use-title">
+        <h2 id="use-title">How to use this site</h2>
         <ol>
           <li>
-            <span
-              ><strong>Audit</strong>Run the checklist against a message or sending domain.</span
-            >
+            <span class="use-n" aria-hidden="true">01</span>
+            <div>
+              <h3>Audit</h3>
+              <p>
+                Run the <a href="/checklist/">checklist</a> against a message or sending domain,
+                or <a href="/mcp/">let your agent</a> do it. Each item is a yes/no.
+              </p>
+            </div>
           </li>
           <li>
-            <span
-              ><strong>Learn</strong>Open an item for the requirement, rationale,
-              implementation, and verification.</span
-            >
+            <span class="use-n" aria-hidden="true">02</span>
+            <div>
+              <h3>Learn</h3>
+              <p>Open any item for what it is, why it matters, and how to implement it.</p>
+            </div>
           </li>
           <li>
-            <span
-              ><strong>Improve</strong>Fix what is missing, send test messages, and
-              re-check.</span
-            >
+            <span class="use-n" aria-hidden="true">03</span>
+            <div>
+              <h3>Improve</h3>
+              <p>Fix what's missing, send a test message, then re-check.</p>
+            </div>
           </li>
         </ol>
       </aside>
@@ -63,21 +69,37 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
 
   <section class="container section">
     <div class="section-header">
-      <div><p class="eyebrow">The whole message</p><h2>Ten parts of good email</h2></div><a
-        href="/spec/">Browse specification →</a
-      >
+      <div><h2>Recently changed</h2></div><a href="/changelog/">Full changelog →</a>
+    </div>
+    <ol class="timeline">
+      {
+        changes.map((change) => (
+          <li>
+            <>
+              <time datetime={change.data.date}>{change.data.date}</time>
+              <h3>
+                <a href={`/changelog/#${change.id}`}>{change.data.title}</a>
+              </h3>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="container section">
+    <div class="section-header">
+      <div><h2>Ten parts of good email</h2></div><a href="/spec/">Browse all topics →</a>
     </div>
     <div class="grid">
       {
         categories.map((category) => (
           <a class="card" href={`/spec/${category.slug}/`}>
-            <span class="count">
-              {String(category.order).padStart(2, "0")} · {counts[category.slug]} topics
-            </span>
-            <>
+            <span class="card-head">
               <h3>{category.title}</h3>
-              <p>{category.summary}</p>
-            </>
+              <span class="count">{counts[category.slug]} topics</span>
+            </span>
+            <p>{category.summary}</p>
           </a>
         ))
       }
@@ -87,11 +109,11 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
   <section class="principles section">
     <div class="container">
       <div class="section-header">
-        <div><p class="eyebrow">Principles</p><h2>One contract, many clients</h2></div>
+        <div><h2>One contract, many clients</h2></div>
       </div>
       <div class="principles-grid">
         <div class="principle">
-          <span>01</span><div>
+          <div>
             <h3>Standards, not folklore</h3><p>
               Every topic cites the RFC, W3C guidance, or authoritative operator
               documentation behind it.
@@ -99,7 +121,7 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
           </div>
         </div>
         <div class="principle">
-          <span>02</span><div>
+          <div>
             <h3>Provider-agnostic</h3><p>
               The outcome matters. Use any ESP, MTA, framework, or template system that can
               meet it.
@@ -107,7 +129,7 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
           </div>
         </div>
         <div class="principle">
-          <span>03</span><div>
+          <div>
             <h3>Test the delivered message</h3><p>
               Generated source is not the result. Verify what arrives after relays, filters,
               and clients touch it.
@@ -116,25 +138,5 @@ const changes = (await getCollection("changelog", ({ data }) => !data.draft))
         </div>
       </div>
     </div>
-  </section>
-
-  <section class="container section">
-    <div class="section-header">
-      <div><p class="eyebrow">Living specification</p><h2>Recently changed</h2></div><a
-        href="/changelog/">Full changelog →</a
-      >
-    </div>
-    <ol class="timeline">
-      {
-        changes.map((change) => (
-          <li>
-            <>
-              <time datetime={change.data.date}>{change.data.date}</time>
-              <h3>{change.data.title}</h3>
-            </>
-          </li>
-        ))
-      }
-    </ol>
   </section>
 </BaseLayout>

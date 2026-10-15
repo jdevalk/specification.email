@@ -1,5 +1,14 @@
 ---
-import { site } from "~/lib/site";
+import { site, categories } from "~/lib/site";
+import ThemeToggle from "./ThemeToggle.astro";
+const { pathname } = Astro.url;
+const primary = [
+  { href: "/spec/", label: "All topics" },
+  { href: "/checklist/", label: "Checklist" },
+  { href: "/mcp/", label: "MCP" },
+  { href: "/about/", label: "About" },
+  { href: "/contribute/", label: "Contribute" },
+];
 ---
 
 <header class="site-header">
@@ -28,13 +37,128 @@ import { site } from "~/lib/site";
       <span>{site.shortName}</span>
     </a>
     <nav class="nav" aria-label="Main navigation">
-      <a href="/spec/">Specification</a>
-      <a href="/checklist/">Checklist</a>
-      <a href="/changelog/">Changelog</a>
-      <a href="/mcp/">MCP</a>
-      <a class="search-link" href="/search/" aria-label="Search the specification"
-        >Search <span aria-hidden="true">⌕</span></a
+      {
+        primary.map((item) => (
+          <a class="nav-primary" href={item.href}>
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        class="search-link"
+        href="/search/"
+        data-search-trigger
+        aria-label="Search the specification"
+        aria-keyshortcuts="Meta+K Control+K"
       >
+        <svg
+          aria-hidden="true"
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><circle cx="11" cy="11" r="7"></circle><path d="m21 21-3.5-3.5"></path></svg
+        >
+        <span class="search-label">Search</span>
+        <kbd class="search-kbd" data-search-kbd hidden>⌘K</kbd>
+      </a>
+      <ThemeToggle />
+      <details class="mobile-menu">
+        <summary aria-label="Menu">
+          <svg
+            class="mobile-menu__icon-open"
+            aria-hidden="true"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"></path></svg
+          >
+          <svg
+            class="mobile-menu__icon-close"
+            aria-hidden="true"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg
+          >
+        </summary>
+        <div class="mobile-menu__panel">
+          <ul class="mobile-menu__primary">
+            {
+              primary.map((item) => (
+                <li>
+                  <a href={item.href}>{item.label}</a>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mobile-menu__label" id="mobile-categories">Categories</p>
+          <ul class="mobile-menu__categories" aria-labelledby="mobile-categories">
+            {
+              categories.map((c) => (
+                <li>
+                  <a
+                    href={`/spec/${c.slug}/`}
+                    aria-current={
+                      pathname.startsWith(`/spec/${c.slug}/`) ? "page" : undefined
+                    }
+                  >
+                    {c.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </details>
     </nav>
   </div>
+  <nav class="category-bar" aria-label="Categories">
+    <ul class="container">
+      {
+        categories.map((c) => (
+          <li>
+            <a
+              href={`/spec/${c.slug}/`}
+              aria-current={pathname.startsWith(`/spec/${c.slug}/`) ? "page" : undefined}
+            >
+              {c.title}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
 </header>
+
+<script is:inline>
+  (function () {
+    var mac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    var kbd = document.querySelector("[data-search-kbd]");
+    if (kbd) {
+      kbd.textContent = mac ? "⌘K" : "Ctrl K";
+      kbd.hidden = false;
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key.toLowerCase() !== "k" || !(mac ? e.metaKey : e.ctrlKey)) return;
+      e.preventDefault();
+      var input = document.getElementById("search-input");
+      if (input) {
+        input.focus();
+        input.select();
+      } else {
+        location.href = "/search/";
+      }
+    });
+  })();
+</script>

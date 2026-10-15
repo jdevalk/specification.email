@@ -8,6 +8,7 @@ export const site = {
   repo: "https://github.com/jdevalk/specification.email",
   author: { name: "Joost de Valk", url: "https://joost.blog" },
   themeColor: "#6d28d9",
+  themeColorDark: "#100d16",
   mcp: {
     endpoint: "https://mcp.specification.email/mcp",
     landing: "https://mcp.specification.email/",

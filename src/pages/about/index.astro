@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { site } from "~/lib/site";
 ---
 
 <BaseLayout
@@ -8,26 +9,124 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 >
   <header class="page-head">
     <div class="container">
-      <p class="eyebrow">About</p><h1>One map of the email stack</h1><p class="lede">
-        Email is a chain of formats, DNS records, relays, filters, clients, and human
-        expectations. This project turns that chain into an auditable contract.
+      <nav class="breadcrumb"><a href="/">Home</a> / About</nav>
+      <h1>About this spec</h1><p class="lede">
+        One question: regardless of the platform that sends it, what does a good email do?
+        Not a framework, not a guide. A spec: what is required, what is recommended, and
+        what to avoid.
       </p>
     </div>
   </header>
   <article class="narrow section prose">
-    <h2>What this is</h2><p>
-      A provider-agnostic specification of observable outcomes. Each page states what the
-      requirement is, why it matters, how to implement it, common mistakes, and how to
-      verify the delivered result.
+    <h2 id="why">Why this exists</h2>
+    <p>
+      Email is a chain of formats, DNS records, relays, filters, clients, and human
+      expectations. The IETF defines the message format, SMTP, and the authentication
+      records. W3C publishes the accessibility guidance. Mailbox providers publish their own
+      sender requirements, and every client renders HTML its own way. Almost nobody carries
+      the whole picture.
     </p>
-    <h2>What this is not</h2><p>
+    <p>
+      This site collects those pieces into one provider-agnostic specification of observable
+      outcomes. Each topic states what the requirement is, why it matters, how to implement
+      it, common mistakes, and how to verify the delivered result.
+    </p>
+
+    <h2 id="audience">Who it is for</h2>
+    <ul>
+      <li>
+        <strong>Engineers</strong> who build or audit the mail an application sends, and want
+        one reference.
+      </li>
+      <li>
+        <strong>Email and lifecycle teams</strong> who want to scope quality without inventing
+        it from scratch.
+      </li>
+      <li>
+        <strong>Agents</strong> that need a machine-readable description of what to check. See{
+          " "
+        }
+        <a href="/mcp/">MCP</a>.
+      </li>
+    </ul>
+
+    <h2 id="what-it-is-not">What it is not</h2>
+    <p>
       It is not an ESP comparison, a template framework, legal advice, or a guarantee of
       inbox placement. Standards define the floor; mailbox providers and recipients still
       make their own decisions.
     </p>
-    <h2>Open by design</h2><p>
-      Code is MIT licensed. Specification content is CC BY 4.0. Every topic cites its
-      sources and the repository accepts corrections.
+
+    <h2 id="status-levels">Status levels</h2>
+    <p>
+      Every topic has a status. Use them as the default; context can justify exceptions.
+    </p>
+    <ul>
+      <li>
+        <strong>Required</strong>: leaving it out breaks delivery, authentication, or access
+        for some recipients.
+      </li>
+      <li>
+        <strong>Recommended</strong>: what modern mailbox providers, clients, and recipients
+        expect.
+      </li>
+      <li><strong>Optional</strong>: useful in some contexts, not all.</li>
+      <li><strong>Avoid</strong>: outdated, harmful, or unsafe.</li>
+    </ul>
+    <p>
+      Technologies that were evaluated and left out, such as BIMI and AMP for Email, are
+      listed under <a href="/considered/">Considered</a>, with the reason and what would
+      change the decision.
+    </p>
+
+    <h2 id="how-its-built">How it is built</h2>
+    <p>
+      A static site, generated with Astro. The content is plain Markdown under <code
+        >src/content/spec/</code
+      >. Sources are part of the schema: a topic without a source does not build.
+    </p>
+
+    <h2 id="credits">Credits</h2>
+    <p>The spec draws on, and credits on every topic that uses it:</p>
+    <ul>
+      <li>
+        <a href="https://www.rfc-editor.org/" rel="external">The IETF RFCs</a>: message
+        format, MIME, SMTP, SPF, DKIM, DMARC, MTA-STS, DANE, and one-click unsubscribe.
+      </li>
+      <li>
+        <a href="https://www.w3.org/WAI/" rel="external">W3C WAI</a> and WCAG for accessibility.
+      </li>
+      <li>
+        <a href="https://www.caniemail.com/" rel="external">Can I email</a> for client rendering
+        support.
+      </li>
+      <li>
+        <a href="https://www.m3aawg.org/" rel="external">M3AAWG</a> and mailbox provider sender
+        guidelines for deliverability.
+      </li>
+      <li>The EU and the UK ICO for privacy and consent; NIST and MITRE for security.</li>
+      <li>
+        <a href="https://specification.website/" rel="external">The Website Specification</a
+        >, its sibling for the web.
+      </li>
+    </ul>
+
+    <h2 id="licensing">Licensing</h2>
+    <p>
+      Content: <a href="https://creativecommons.org/licenses/by/4.0/" rel="external"
+        >CC BY 4.0</a
+      >. Code: <a href={`${site.repo}/blob/main/LICENSE`} rel="external">MIT</a>. Use it,
+      fork it, ship it.
+    </p>
+
+    <h2 id="contact">Contact</h2>
+    <p>
+      Maintained by <a href={site.author.url} rel="external">{site.author.name}</a> and contributors.
+      For security reports, follow <a href="/.well-known/security.txt"
+        ><code>/.well-known/security.txt</code></a
+      >. For anything else, <a href={`${site.repo}/issues`} rel="external">open an issue</a
+      >{" "}
+      or read how to <a href="/contribute/">contribute</a>.
     </p>
   </article>
 </BaseLayout>

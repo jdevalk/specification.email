@@ -53,7 +53,26 @@ const defaultGraph = {
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta name="theme-color" content={site.themeColor} />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t !== "light" && t !== "dark")
+            t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content={site.themeColor}
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content={site.themeColorDark}
+    />
     <Seo
       title={title}
       titleTemplate={`%s · ${site.shortName}`}
@@ -90,7 +109,6 @@ const defaultGraph = {
     <aside class="sibling-banner" aria-label="Related specification">
       <div class="container sibling-banner-inner">
         <div>
-          <p class="eyebrow">Also in the specification family</p>
           <h2>Building for the web too?</h2>
           <p>
             Explore The Website Specification: a platform-agnostic guide to what a good
@@ -107,5 +125,6 @@ const defaultGraph = {
       </div>
     </aside>
     <SiteFooter />
+    <script is:inline src="/theme-toggle.js" defer></script>
   </body>
 </html>

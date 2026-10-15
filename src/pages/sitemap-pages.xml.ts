@@ -8,6 +8,7 @@ const pages = [
   "/changelog/",
   "/considered/",
   "/about/",
+  "/contribute/",
   "/mcp/",
   "/search/",
 ];

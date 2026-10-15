@@ -11,9 +11,9 @@ const { href, title, summary, status } = Astro.props;
 
 <a class="topic-row" href={href}>
   <StatusBadge status={status} />
-  <span>
+  <span class="topic-row__text">
     <h2>{title}</h2>
     <p>{summary}</p>
   </span>
-  <span aria-hidden="true">→</span>
+  <span class="topic-row__arrow" aria-hidden="true">→</span>
 </a>
