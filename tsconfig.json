@@ -6,5 +6,5 @@
     "types": ["astro/client"]
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "mcp"]
+  "exclude": ["dist", "mcp", "functions"]
 }

@@ -30,6 +30,23 @@ npm run mcp:typecheck
 npm run mcp:dry-run
 ```
 
+## Diagnostics
+
+Browser errors and 10% of page loads are reported to GlitchTip with `@sentry/browser` (`src/components/Diagnostics.astro`). The SDK sends envelopes to the same-origin tunnel `/api/diagnostics`, a Pages Function (`functions/api/diagnostics.ts`) that forwards one error or transaction per request to a fixed GlitchTip project. It enforces the site Origin, a 64 KB limit, 20 requests per minute per IP and 2,000 per day, using HMAC-hashed IPs in D1 that expire within minutes, and it scrubs user data, cookies, headers, bodies, and query strings.
+
+Configuration lives in the Cloudflare Pages project, not in this repository:
+
+| Name                               | Kind           | Purpose                                               |
+| ---------------------------------- | -------------- | ----------------------------------------------------- |
+| `PUBLIC_SENTRY_DSN`                | build variable | Enables the browser SDK; unset means no telemetry     |
+| `PUBLIC_SENTRY_TRACES_SAMPLE_RATE` | build variable | Performance sampling, default `0.1`                   |
+| `DIAGNOSTICS_ENABLED`              | variable       | `true` turns the tunnel on; anything else returns 404 |
+| `GLITCHTIP_DSN`                    | secret         | The only upstream project the tunnel sends to         |
+| `DIAGNOSTICS_HASH_SALT`            | secret         | HMAC key for rate-limit IP hashes                     |
+| `DIAGNOSTICS_DB`                   | D1 binding     | Rate-limit counters; if unavailable, nothing is sent  |
+
+Run `npm run functions:typecheck` and `npm run diagnostics:test` (end-to-end against a mock upstream; takes about three minutes) after changing the tunnel.
+
 ## MCP tools
 
 The stateless, read-only Worker exposes `search`, `list_topics`, `get_topic`, `get_checklist`, `get_categories`, and `get_changes`, plus an `audit_email` prompt. Its production endpoint is configured as `https://mcp.specification.email/mcp`.

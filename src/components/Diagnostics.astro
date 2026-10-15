@@ -1,0 +1,107 @@
+---
+// Browser error and performance telemetry. Envelopes go to the same-origin
+// tunnel at /api/diagnostics (functions/api/diagnostics.ts), which forwards
+// them to GlitchTip. Nothing initialises unless PUBLIC_SENTRY_DSN is set at
+// build time, so local, CI, and preview builds stay silent.
+---
+
+<script>
+  import {
+    init,
+    browserTracingIntegration,
+    type Breadcrumb,
+    type Event,
+  } from "@sentry/browser";
+  import { site } from "~/lib/site";
+
+  const dsn = import.meta.env.PUBLIC_SENTRY_DSN;
+  const enabled = import.meta.env.PUBLIC_DIAGNOSTICS_ENABLED !== "false";
+  const tunnel = "/api/diagnostics";
+  const sampleRate = Number(import.meta.env.PUBLIC_SENTRY_TRACES_SAMPLE_RATE ?? "0.1");
+
+  const isTunnel = (url: string) => {
+    try {
+      return new URL(url, location.origin).pathname.startsWith(tunnel);
+    } catch {
+      return false;
+    }
+  };
+
+  // Drop query strings and fragments: they can carry tokens or personal data.
+  const stripUrl = (value: unknown) => {
+    if (typeof value !== "string") return value;
+    return value.replace(/[?#][^\s"']*/g, "");
+  };
+
+  const scrub = <T extends Event>(event: T): T => {
+    delete event.user;
+    delete event.server_name;
+    if (event.request) {
+      event.request = { url: stripUrl(event.request.url) as string | undefined };
+    }
+    event.breadcrumbs = event.breadcrumbs?.flatMap((crumb) => {
+      const url = crumb.data?.url ?? crumb.data?.to;
+      if (typeof url === "string" && isTunnel(url)) return [];
+      return [scrubBreadcrumb(crumb)];
+    });
+    for (const span of event.spans ?? []) {
+      span.description = stripUrl(span.description) as string | undefined;
+      if (span.data) {
+        for (const key of ["url", "http.url", "http.query", "url.full", "url.query"]) {
+          if (key in span.data) span.data[key] = stripUrl(span.data[key]) as string;
+        }
+        delete span.data["http.query"];
+        delete span.data["url.query"];
+      }
+    }
+    if (event.transaction) event.transaction = stripUrl(event.transaction) as string;
+    return event;
+  };
+
+  const scrubBreadcrumb = (crumb: Breadcrumb): Breadcrumb => {
+    if (crumb.data) {
+      for (const key of ["url", "from", "to"]) {
+        if (key in crumb.data) crumb.data[key] = stripUrl(crumb.data[key]);
+      }
+      delete crumb.data["http.query"];
+      delete crumb.data["http.fragment"];
+    }
+    crumb.message = stripUrl(crumb.message) as string | undefined;
+    return crumb;
+  };
+
+  if (dsn && enabled && location.origin === site.url) {
+    init({
+      dsn,
+      tunnel,
+      // GlitchTip ingests transactions, not streamed spans.
+      traceLifecycle: "static",
+      tracesSampleRate: Number.isFinite(sampleRate) ? sampleRate : 0.1,
+      dataCollection: {
+        userInfo: false,
+        cookies: false,
+        httpHeaders: false,
+        httpBodies: [],
+        urlQueryParams: false,
+        graphQL: { document: false, variables: false },
+        genAI: { inputs: false, outputs: false },
+      },
+      sendClientReports: false,
+      tracePropagationTargets: [],
+      integrations: (defaults) => [
+        // Sessions are rejected by the tunnel; one error or transaction per request.
+        ...defaults.filter((integration) => integration.name !== "BrowserSession"),
+        browserTracingIntegration({
+          shouldCreateSpanForRequest: (url) => !isTunnel(url),
+        }),
+      ],
+      beforeBreadcrumb: (crumb) => {
+        const url = crumb.data?.url;
+        if (typeof url === "string" && isTunnel(url)) return null;
+        return scrubBreadcrumb(crumb);
+      },
+      beforeSend: (event) => scrub(event),
+      beforeSendTransaction: (event) => scrub(event),
+    });
+  }
+</script>

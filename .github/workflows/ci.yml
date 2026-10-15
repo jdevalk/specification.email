@@ -20,6 +20,7 @@ jobs:
       - run: npm ci
       - run: npm run format:check
       - run: npm run check
+      - run: npm run functions:typecheck
       - run: npm run build
       - run: npm run mcp:typecheck
       - run: npm run mcp:dry-run

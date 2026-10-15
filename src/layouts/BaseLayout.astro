@@ -3,6 +3,7 @@ import "~/styles/global.css";
 import Seo from "@jdevalk/astro-seo-graph/Seo.astro";
 import SiteHeader from "~/components/SiteHeader.astro";
 import SiteFooter from "~/components/SiteFooter.astro";
+import Diagnostics from "~/components/Diagnostics.astro";
 import { site } from "~/lib/site";
 
 interface Props {
@@ -80,6 +81,7 @@ const defaultGraph = {
       ]}
     />
     <slot name="head" />
+    <Diagnostics />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>

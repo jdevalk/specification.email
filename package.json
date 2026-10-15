@@ -22,22 +22,27 @@
     "mcp:data": "npm run build:data --workspace mcp",
     "mcp:dev": "npm run dev --workspace mcp",
     "mcp:typecheck": "npm run typecheck --workspace mcp",
-    "mcp:dry-run": "npm run dry-run --workspace mcp"
+    "mcp:dry-run": "npm run dry-run --workspace mcp",
+    "functions:typecheck": "tsc --noEmit -p functions",
+    "diagnostics:test": "node scripts/test-diagnostics.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@jdevalk/astro-seo-graph": "^2.2.0",
+    "@sentry/browser": "11.8.0",
     "astro": "^7.2.4",
     "yaml": "^2.8.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20261015.1",
     "pagefind": "^1.5.2",
+    "png-to-ico": "^3.0.2",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
-    "png-to-ico": "^3.0.2",
     "sharp": "^0.35.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.151.0"
   }
 }
