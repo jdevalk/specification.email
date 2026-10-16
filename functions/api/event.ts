@@ -27,9 +27,12 @@ export const onRequest: PagesFunction = async ({ request }) => {
       method: "POST",
       headers,
       body: request.body,
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(10_000),
     });
+    if (upstream.status >= 300 && upstream.status < 400) {
+      return new Response(null, { status: 502, headers: responseHeaders });
+    }
     const retryAfter = upstream.headers.get("Retry-After");
     const resultHeaders = new Headers(responseHeaders);
     if (retryAfter) resultHeaders.set("Retry-After", retryAfter);

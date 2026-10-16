@@ -7,7 +7,7 @@ export const onRequest: PagesFunction = async ({ request }) => {
 
   try {
     const upstream = await fetch(SCRIPT_URL, {
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(10_000),
       cf: { cacheTtlByStatus: { "200-299": 3600, "300-599": -1 } },
     });
