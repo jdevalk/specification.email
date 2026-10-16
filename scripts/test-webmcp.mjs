@@ -29,6 +29,28 @@ async function loadTools(fetch) {
   return tools;
 }
 
+for (const origin of ["https://preview.example.pages.dev", "http://localhost:31337"]) {
+  test(`topic reads use the current deployment at ${origin}`, async () => {
+    const page = manifest.pages.find((page) => page.slug === "dkim-signatures");
+    const path = `/spec/${page.category}/${page.slug}.md`;
+    const markdown = readFileSync(new URL(`../dist${path}`, import.meta.url), "utf8");
+    const requests = [];
+    const tools = await loadTools(async (url) => {
+      // Resolve from a nested page and enforce the deployed connect-src 'self'.
+      const resolved = new URL(url, `${origin}/spec/authentication/dkim-signatures/`);
+      requests.push(resolved.href);
+      if (resolved.origin !== origin) throw new TypeError("Blocked cross-origin fetch");
+      if (resolved.pathname === "/webmcp-manifest.json") return response();
+      assert.equal(resolved.pathname, path);
+      return { ok: true, text: async () => markdown };
+    });
+
+    const result = await tools.get_topic.execute({ slug: page.slug, limit: 500 });
+    assert.equal(result, markdown);
+    assert.deepEqual(requests, [`${origin}/webmcp-manifest.json`, `${origin}${path}`]);
+  });
+}
+
 for (const cancelledCaller of ["first", "second"]) {
   test(`cancelling the ${cancelledCaller} caller leaves the shared fetch usable`, async () => {
     let finish;
