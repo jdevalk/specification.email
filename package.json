@@ -24,7 +24,9 @@
     "mcp:typecheck": "npm run typecheck --workspace mcp",
     "mcp:dry-run": "npm run dry-run --workspace mcp",
     "functions:typecheck": "tsc --noEmit -p functions",
-    "diagnostics:test": "node scripts/test-diagnostics.mjs"
+    "diagnostics:test": "node scripts/test-diagnostics.mjs",
+    "test:webmcp": "node --test scripts/test-webmcp.mjs",
+    "webmcp:schema": "node scripts/emit-webmcp-schema.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -43,6 +45,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "sharp": "^0.35.3",
     "typescript": "^6.0.3",
-    "wrangler": "^4.151.0"
+    "wrangler": "^4.151.0",
+    "webmcp-types": "^0.1.10"
   }
 }

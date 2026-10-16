@@ -32,7 +32,7 @@ const topics = (await getCollection("spec", ({ data }) => !data.draft)).sort(
         const items = topics.filter((topic) => topic.data.category === category.slug);
         return (
           items.length > 0 && (
-            <section class="check-group">
+            <section class="check-group" id={category.slug}>
               <p class="section-intro">{category.summary}</p>
               {items.map((topic) => {
                 const slug = topic.data.slug ?? topic.id.split("/").pop();
