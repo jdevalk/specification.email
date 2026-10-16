@@ -48,5 +48,15 @@ import { site } from "~/lib/site";
       Run the Worker locally from <code>mcp/</code> with <code>npm run dev</code>.
       Deployment configuration is included but no deployment occurs automatically.
     </p>
+    <h2>Browser tools (WebMCP)</h2><p>
+      Every page also registers five <a href="https://webmachinelearning.github.io/webmcp/"
+        >WebMCP</a
+      > browser tools — <code>search_spec</code>, <code>list_topics</code>, <code
+        >get_topic</code
+      >, <code>open_search</code>, and <code>open_checklist</code> — so an in-browser AI agent
+      can search and read the specification directly, without the remote MCP server. The bundle
+      loads only when the browser exposes
+      <code>modelContext</code>.
+    </p>
   </div>
 </BaseLayout>

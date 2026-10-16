@@ -1,0 +1,182 @@
+[
+  {
+    "expectedCall": [{ "arguments": { "query": "DKIM" }, "functionName": "search_spec" }],
+    "messages": [
+      { "content": "What does the spec say about DKIM?", "role": "user", "type": "message" }
+    ],
+    "name": "Direct keyword search"
+  },
+  {
+    "expectedCall": [
+      {
+        "arguments": { "query": { "$pattern": "unsubscribe" } },
+        "functionName": "search_spec"
+      }
+    ],
+    "messages": [
+      { "content": "Find me the unsubscribe guidance.", "role": "user", "type": "message" }
+    ],
+    "name": "Search by meaning with pattern"
+  },
+  {
+    "expectedCall": [
+      {
+        "arguments": { "category": "authentication", "status": "required" },
+        "functionName": "list_topics"
+      }
+    ],
+    "messages": [
+      {
+        "content": "Show me all required authentication topics.",
+        "role": "user",
+        "type": "message"
+      }
+    ],
+    "name": "Filtered topic list"
+  },
+  {
+    "expectedCall": [
+      {
+        "arguments": { "category": "accessibility", "page": 2, "page_size": 5 },
+        "functionName": "list_topics"
+      }
+    ],
+    "messages": [
+      {
+        "content": "Show me the second page of accessibility topics, five per page.",
+        "role": "user",
+        "type": "message"
+      }
+    ],
+    "name": "Paginated topic list"
+  },
+  {
+    "expectedCall": [
+      { "arguments": { "slug": "dkim-signatures" }, "functionName": "get_topic" }
+    ],
+    "messages": [
+      { "content": "Read the DKIM signatures guidance.", "role": "user", "type": "message" }
+    ],
+    "name": "Read a topic by slug"
+  },
+  {
+    "expectedCall": [
+      { "arguments": { "offset": 40, "slug": "starttls" }, "functionName": "get_topic" }
+    ],
+    "messages": [
+      {
+        "content": "Read the rest of the STARTTLS page from line 40.",
+        "role": "user",
+        "type": "message"
+      }
+    ],
+    "name": "Read a topic from an offset"
+  },
+  {
+    "expectedCall": [
+      {
+        "ordered": [
+          {
+            "arguments": { "query": { "$pattern": "DMARC" } },
+            "functionName": "search_spec",
+            "mockOutput": "1. DMARC policy — required · authentication\n   https://specification.email/spec/authentication/dmarc-policy/"
+          },
+          { "arguments": { "slug": "dmarc-policy" }, "functionName": "get_topic" }
+        ]
+      }
+    ],
+    "messages": [
+      {
+        "content": "Find the page about DMARC and read it.",
+        "role": "user",
+        "type": "message"
+      }
+    ],
+    "name": "Search then read journey"
+  },
+  {
+    "expectedCall": [
+      {
+        "arguments": { "query": { "$pattern": "quantum|email" } },
+        "functionName": "search_spec"
+      }
+    ],
+    "messages": [
+      {
+        "content": "Read the page about quantum email.",
+        "role": "user",
+        "type": "message"
+      },
+      {
+        "arguments": { "slug": "quantum-email" },
+        "name": "get_topic",
+        "role": "model",
+        "type": "functioncall"
+      },
+      {
+        "name": "get_topic",
+        "response": {
+          "result": {
+            "code": "NOT_FOUND",
+            "error": "No spec page with slug \"quantum-email\".",
+            "suggestion": "Use search_spec to find the right slug."
+          }
+        },
+        "role": "user",
+        "type": "functionresponse"
+      }
+    ],
+    "name": "Unknown slug recovery"
+  },
+  {
+    "expectedCall": [{ "arguments": {}, "functionName": "list_topics" }],
+    "messages": [
+      {
+        "content": "Is there anything in the spec about fax?",
+        "role": "user",
+        "type": "message"
+      },
+      {
+        "arguments": { "query": "fax" },
+        "name": "search_spec",
+        "role": "model",
+        "type": "functioncall"
+      },
+      {
+        "name": "search_spec",
+        "response": {
+          "result": {
+            "code": "NOT_FOUND",
+            "error": "No spec pages matched \"fax\".",
+            "suggestion": "Try broader keywords, or call list_topics to browse by category."
+          }
+        },
+        "role": "user",
+        "type": "functionresponse"
+      }
+    ],
+    "name": "Empty search recovery"
+  },
+  {
+    "expectedCall": [
+      { "arguments": { "category": "privacy" }, "functionName": "open_checklist" }
+    ],
+    "messages": [
+      { "content": "Take me to the privacy checklist.", "role": "user", "type": "message" }
+    ],
+    "name": "Open the checklist for a category"
+  },
+  {
+    "expectedCall": [
+      { "arguments": { "query": "spam complaints" }, "functionName": "open_search" }
+    ],
+    "messages": [
+      {
+        "content": "Open the search page for 'spam complaints'.",
+        "role": "user",
+        "type": "message"
+      }
+    ],
+    "name": "Open search with a query"
+  }
+]
