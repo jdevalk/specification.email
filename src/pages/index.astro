@@ -1,142 +1,257 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { categories } from "~/lib/site";
-
+import { categories, site } from "~/lib/site";
+import { getCollection } from "astro:content";
+import "~/styles/field-home.css";
+const changeTypeLabel: Record<string, string> = {
+  added: "Added",
+  changed: "Changed",
+  status: "Status",
+  removed: "Removed",
+};
 const topics = await getCollection("spec", ({ data }) => !data.draft);
 const counts = Object.fromEntries(
-  categories.map((category) => [
-    category.slug,
-    topics.filter((topic) => topic.data.category === category.slug).length,
-  ]),
+  categories.map((c) => [c.slug, topics.filter((t) => t.data.category === c.slug).length]),
 );
 const changes = (await getCollection("changelog", ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.localeCompare(a.data.date))
   .slice(0, 3);
+const dateFmt = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+const groups = [
+  { name: "The message", slugs: ["foundations"] },
+  { name: "The delivery", slugs: ["authentication", "deliverability", "security"] },
+  { name: "The experience", slugs: ["accessibility", "rendering", "internationalisation"] },
+  { name: "The relationship", slugs: ["privacy", "lifecycle", "automation"] },
+];
+const statusCopy = [
+  {
+    key: "required",
+    title: "Required",
+    symbol: "●",
+    text: "Leaving it out breaks delivery, authentication, or access for some recipients.",
+  },
+  {
+    key: "recommended",
+    title: "Recommended",
+    symbol: "◐",
+    text: "What modern mailbox providers, clients, and recipients expect.",
+  },
+  {
+    key: "optional",
+    title: "Optional",
+    symbol: "○",
+    text: "Useful when the context calls for it.",
+  },
+  {
+    key: "avoid",
+    title: "Avoid",
+    symbol: "×",
+    text: "Outdated, harmful, or unsafe.",
+  },
+];
 ---
 
 <BaseLayout
   title="Email standards for better messages"
   description="Build reliable email with sourced guidance for authentication, deliverability, accessibility, privacy, security, and client rendering."
 >
-  <section class="hero">
-    <div class="container hero-grid">
-      <div>
-        <h1>What a good email does.</h1>
-        <p class="lede">
+  <div class="field-guide">
+    <section class="field-hero" aria-labelledby="field-title">
+      <div class="hero-copy">
+        <h1 id="field-title">What a good<br />email <span>does.</span></h1>
+        <p>
           A sourced specification for every technical detail that matters: from <code
             >From:</code
-          > and MIME to DMARC, one-click unsubscribe, accessible HTML, and dark mode. Written
-          for humans and agents.
+          >
+          and MIME to DMARC, one-click unsubscribe, accessible HTML, and dark mode. Written for
+          humans and agents.
         </p>
-        <div class="actions">
-          <a class="button primary" href="/spec/">Browse all {topics.length} topics →</a>
-          <a class="button" href="/checklist/">Get the checklist</a>
-          <a class="button" href="/mcp/">Connect an agent</a>
+        <div class="hero-actions">
+          <a class="action" href="/spec/"
+            >Explore the spec <span aria-hidden="true">↗</span></a
+          ><a class="text-link" href="/checklist/"
+            >Get the checklist <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="hero-facts">
+          <span><strong>{topics.length}</strong> topics</span><span
+            ><strong>{categories.length}</strong> areas</span
+          ><a href={site.repo}>Built in the open ↗</a>
         </div>
       </div>
-      <aside class="use-card" aria-labelledby="use-title">
-        <h2 id="use-title">How to use this site</h2>
-        <ol>
-          <li>
-            <span class="use-n" aria-hidden="true">01</span>
-            <div>
-              <h3>Audit</h3>
-              <p>
-                Run the <a href="/checklist/">checklist</a> against a message or sending domain,
-                or <a href="/mcp/">let your agent</a> do it. Each item is a yes/no.
-              </p>
-            </div>
-          </li>
-          <li>
-            <span class="use-n" aria-hidden="true">02</span>
-            <div>
-              <h3>Learn</h3>
-              <p>Open any item for what it is, why it matters, and how to implement it.</p>
-            </div>
-          </li>
-          <li>
-            <span class="use-n" aria-hidden="true">03</span>
-            <div>
-              <h3>Improve</h3>
-              <p>Fix what's missing, send a test message, then re-check.</p>
-            </div>
-          </li>
-        </ol>
-      </aside>
-    </div>
-  </section>
-
-  <section class="container section">
-    <div class="section-header">
-      <div><h2>Recently changed</h2></div><a href="/changelog/">Full changelog →</a>
-    </div>
-    <ol class="timeline">
-      {
-        changes.map((change) => (
-          <li>
-            <>
-              <time datetime={change.data.date}>{change.data.date}</time>
-              <h3>
-                <a href={`/changelog/#${change.id}`}>{change.data.title}</a>
-              </h3>
-            </>
-          </li>
-        ))
-      }
-    </ol>
-  </section>
-
-  <section class="container section">
-    <div class="section-header">
-      <div><h2>Ten parts of good email</h2></div><a href="/spec/">Browse all topics →</a>
-    </div>
-    <div class="grid">
-      {
-        categories.map((category) => (
-          <a class="card" href={`/spec/${category.slug}/`}>
-            <span class="card-head">
-              <h3>{category.title}</h3>
-              <span class="count">{counts[category.slug]} topics</span>
-            </span>
-            <p>{category.summary}</p>
-          </a>
-        ))
-      }
-    </div>
-  </section>
-
-  <section class="principles section">
-    <div class="container">
-      <div class="section-header">
-        <div><h2>One contract, many clients</h2></div>
+      <figure class="system-map" aria-labelledby="map-title">
+        <figcaption id="map-title">
+          <span>Anatomy of a good email</span><span aria-hidden="true">↙</span>
+        </figcaption>
+        <div class="map-layers">
+          {
+            groups.map((group, i) => (
+              <div class="map-layer">
+                <>
+                  <div class="map-heading">
+                    <>
+                      <span class="map-number" aria-hidden="true">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h2>{group.name}</h2>
+                    </>
+                  </div>
+                  <ul>
+                    {group.slugs.map((slug) => {
+                      const category = categories.find((c) => c.slug === slug)!;
+                      return (
+                        <li>
+                          <a href={`/spec/${slug}/`}>
+                            {category.title}
+                            <span aria-hidden="true">↗</span>
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </>
+              </div>
+            ))
+          }
+        </div>
+        <p class="map-foot">One email. All of these responsibilities.</p>
+      </figure>
+    </section>
+    <section class="updates-section" aria-labelledby="updates-title">
+      <div>
+        <h2 id="updates-title">
+          Email evolves.<br /><span>So does the spec.</span>
+        </h2><a class="text-link" href="/changelog/">Full changelog →</a>
+      </div><ol>
+        {
+          changes.map((entry) => (
+            <li>
+              <>
+                <time datetime={entry.data.date}>
+                  {dateFmt.format(new Date(entry.data.date))}
+                </time>
+                <div>
+                  <>
+                    <span>{changeTypeLabel[entry.data.type]}</span>
+                    <h3>
+                      <a href={`/changelog/#${entry.id}`}>{entry.data.title}</a>
+                    </h3>
+                  </>
+                </div>
+              </>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+    <section class="topic-section" aria-labelledby="topics-title">
+      <div class="section-heading">
+        <h2 id="topics-title">
+          Every detail.<br /><span>A reason behind it.</span>
+        </h2><p>
+          Ten areas, grounded in email standards.<br />Pick the part of your email you’re
+          working on.
+        </p>
       </div>
-      <div class="principles-grid">
-        <div class="principle">
-          <div>
-            <h3>Standards, not folklore</h3><p>
-              Every topic cites the RFC, W3C guidance, or authoritative operator
-              documentation behind it.
-            </p>
-          </div>
+      <ul class="topic-grid">
+        {
+          categories.map((category, i) => (
+            <li>
+              <a class="topic-link" href={`/spec/${category.slug}/`}>
+                <>
+                  <span class="topic-number" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <>
+                      <h3>{category.title}</h3>
+                      <p>{category.summary}</p>
+                    </>
+                  </div>
+                  <span class="topic-end">
+                    <>
+                      <span>{counts[category.slug]} topics</span>
+                      <strong aria-hidden="true">↗</strong>
+                    </>
+                  </span>
+                </>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <section class="working-section" aria-labelledby="working-title">
+      <div class="working-intro">
+        <h2 id="working-title">
+          Read it.<br />Check it.<br /><span>Make it better.</span>
+        </h2><a class="text-link" href="/checklist/">Open the checklist →</a>
+      </div>
+      <div class="working-body">
+        <p class="working-lede">
+          Every topic explains what it is, why it matters, and how to implement it. Every
+          item in the checklist is a yes/no.
+        </p><dl class="status-grid">
+          {
+            statusCopy.map((s) => (
+              <div>
+                <>
+                  <dt>
+                    <span aria-hidden="true">{s.symbol}</span>
+                    {s.title}
+                    <strong>{topics.filter((t) => t.data.status === s.key).length}</strong>
+                  </dt>
+                  <dd>{s.text}</dd>
+                </>
+              </div>
+            ))
+          }
+        </dl><p class="working-note">
+          Audit a delivered message. Fix what’s missing, send a test, then re-check.
+        </p>
+      </div>
+    </section>
+    <section class="agent-section" id="mcp" aria-labelledby="agent-title">
+      <div>
+        <h2 id="agent-title">
+          Same spec.<br /><span>Another pair of eyes.</span>
+        </h2><p>
+          Let your agent query the same specification through a read-only MCP server. Search
+          topics, fetch guidance, build checklists, or ask what changed.
+        </p><div class="agent-actions">
+          <a class="action" href="/mcp/">Connect MCP ↗</a><a
+            class="text-link"
+            href="/llms.txt">llms.txt →</a
+          >
         </div>
-        <div class="principle">
-          <div>
-            <h3>Provider-agnostic</h3><p>
-              The outcome matters. Use any ESP, MTA, framework, or template system that can
-              meet it.
-            </p>
-          </div>
-        </div>
-        <div class="principle">
-          <div>
-            <h3>Test the delivered message</h3><p>
-              Generated source is not the result. Verify what arrives after relays, filters,
-              and clients touch it.
-            </p>
+      </div>
+      <div
+        class="agent-diagram"
+        aria-label="Humans read HTML, agents read Markdown or use MCP; all use the same specification"
+      >
+        <div class="diagram-source">
+          <span>{topics.length} topics</span><strong>One specification</strong>
+        </div><div class="diagram-branches">
+          <div><span>For people</span><a href="/spec/">HTML ↗</a></div><div>
+            <span>For agents</span><a href="/llms.txt">Markdown ↗</a><a href="/mcp/"
+              >MCP ↗</a
+            >
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+    <section class="principles" aria-label="Principles">
+      <p>
+        <strong>Standards, not folklore.</strong> Primary sources on every topic.
+      </p><p>
+        <strong>Provider agnostic.</strong> Use any ESP, MTA, or template system.
+      </p><p>
+        <strong>Test the delivered message.</strong> Verify what actually arrives.
+      </p>
+    </section>
+  </div>
 </BaseLayout>

@@ -12,7 +12,7 @@ const topics = (await getCollection("spec", ({ data }) => !data.draft)).sort(
   title="Email quality and compliance checklist"
   description="Audit a delivered email and its sending domain against sourced requirements for authentication, accessibility, security, privacy, and rendering."
 >
-  <header class="page-head">
+  <header class="page-head checklist-head">
     <div class="container">
       <h1>Audit an email, end to end</h1><p class="lede">
         Check the delivered message, not only the template. Headers, authentication results,
@@ -26,13 +26,17 @@ const topics = (await getCollection("spec", ({ data }) => !data.draft)).sort(
       </div>
     </div>
   </header>
-  <div class="narrow section">
+  <div class="narrow section checklist-content">
+    <nav class="checklist-jumps" aria-label="Checklist categories">
+      {categories.map((category) => <a href={`#${category.slug}`}>{category.title}</a>)}
+    </nav>
     {
       categories.map((category) => {
         const items = topics.filter((topic) => topic.data.category === category.slug);
         return (
           items.length > 0 && (
             <section class="check-group" id={category.slug}>
+              <h2>{category.title}</h2>
               <p class="section-intro">{category.summary}</p>
               {items.map((topic) => {
                 const slug = topic.data.slug ?? topic.id.split("/").pop();
@@ -40,7 +44,7 @@ const topics = (await getCollection("spec", ({ data }) => !data.draft)).sort(
                   <label class="check-item">
                     <input type="checkbox" />
                     <StatusBadge status={topic.data.status} />
-                    <span>
+                    <span class="check-copy">
                       <strong>
                         <a href={`/spec/${category.slug}/${slug}/`}>{topic.data.title}</a>
                       </strong>
